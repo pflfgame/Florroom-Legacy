@@ -1013,7 +1013,7 @@
 			PetalSVGArray.Web="<path class='fwhite-path ns' d='M39 34.4A15 15 0 0 0 50 26.4A15 15 0 0 0 61 34.4A15 15 0 0 0 56.8 47.4A15 15 0 0 0 43.2 47.4A15 15 0 0 0 39 34.4'/>"
 			PetalSVGArray.Honey="<path class='fcyellow-path ns' d='M44.4 28.3L55.6 28.3L61.2 38L55.6 47.7L44.4 47.7L38.8 38Z'/>"
 			PetalSVGArray.Basic="<path class='fwhite-path ns' d='M50 25A13 13 0 0 0 50 51A13 13 0 0 0 50 25'/>"
-			PetalSVGArray.Light="<path class='fwhite-path ns' d='M50 19.4A7 7 0 0 0 50 33.4A7 7 0 0 0 50 19.4M39 27.4A7 7 0 0 0 39 41.4A7 7 0 0 0 39 27.4M61 27.4A7 7 0 0 0 61 41.4A7 7 0 0 0 61 27.4M43.2 40.4A7 7 0 0 0 43.2 54.4A7 7 0 0 0 43.2 40.4M56.8 40.4A7 7 0 0 0 56.8 54.4A7 7 0 0 0 56.8 40.4'/>"
+			PetalSVGArray.Light="<path class='fwhite-path ns' d='M45.3 22.8A7 7 0 0 0 45.3 36.8A7 7 0 0 0 45.3 22.8M59.5 31A7 7 0 0 0 59.5 45A7 7 0 0 0 59.5 31M45.3 39.2A7 7 0 0 0 45.3 53.2A7 7 0 0 0 45.3 39.2'/>"
 			PetalSVGArray.Rock="<path class='fgrey-path ns' d='M34 32L50 20L66 36L62 50L42 52Z'/>"
 			PetalSVGArray.Rose="<path class='fcpink-path ns' d='M50 25A13 13 0 0 0 50 51A13 13 0 0 0 50 25'/>"
 			PetalSVGArray.Stinger="<path class='fdgrey-path ns' d='M47 32.8L56 38L47 43.2Z'/>"
@@ -5845,6 +5845,15 @@
 			fight.environment=explore.environment[explore.flowerspot]
 			if(fight.environment>0) player.envcollect[fight.environment]=true
 			fight.environmentdetail=0
+			document.getElementById("flower-effect").innerHTML=""
+			displayFightField()
+			displayFight()
+			updateFlowerState()
+			updateT()
+		}
+		function readyFight() {
+			if(fight.petal.length!==FlowerSlot()) return
+			addLog("[bot#7976] "+translateText("Good luck with that!"),"#7f7fff")
 			if(fight.environment===5) {
 				fight.environmentdetail=new Array()
 				fight.environmentdetail[0]=false
@@ -5863,15 +5872,6 @@
 					for(let i=0;i<=4;i++) fight.environmentdetail[i]=false
 				}
 			}
-			document.getElementById("flower-effect").innerHTML=""
-			displayFightField()
-			displayFight()
-			updateFlowerState()
-			updateT()
-		}
-		function readyFight() {
-			if(fight.petal.length!==FlowerSlot()) return
-			addLog("[bot#7976] "+translateText("Good luck with that!"),"#7f7fff")
 			fight.ready=true
 			openInventory(false)
 			spawnMob()
@@ -7823,7 +7823,7 @@
 		}
 		function translateAll() {
 			if(player.savesettings.language!=="Chinese") return
-			PetalDescriptionListTrans=["网。","好的花瓣，很强，不过你合不了。","比大部分花瓣弱，但是回复很快，并且由5个部分构成。","非常耐用，但是冷却有点长。","它的治疗属性非常惊人。","被这玩意打很疼，但是脆的离谱。","有毒，但是要一点时间生效。","非常强势的花瓣。","可以发射的东西。","以某种方式增加你的最大生命值。","让你的其它花瓣行动更快。","小心过敏。","神秘的妙妙工具，受影响的单位被抑制，无法治疗。","健达奇趣蛋。","这东西重的离谱，没东西挡得住它。","非常神奇以至于周围的物体转了起来。","收集太阳能并持续治疗花朵。","对造成伤害的敌人反伤。","生成的非常快，但是难以击退敌人。","一堆沙粒。","在你生命值不超过一半时快速持续治疗。","它可以被移动得更远。","肘飞周围的敌人。","没人喜欢摸它。","对未受伤目标造成额外伤害。","为你提供临时护盾。","将受到的伤害分摊到后面的回合。","让花瓣遇水变大变高。","基于造成的伤害治疗花朵。","它炸了，打中很多敌人。","奇怪的遗物，让生物对你变得更中立。","为花朵提供额外护甲。","降低受影响单位的护甲。","挂起时吸收受到的伤害。","这简直是空气。"]
+			PetalDescriptionListTrans=["网。","好的花瓣，很强，不过你合不了。","比大部分花瓣弱，但是回复很快，并且由多个部分构成。","非常耐用，但是冷却有点长。","它的治疗属性非常惊人。","被这玩意打很疼，但是脆的离谱。","有毒，但是要一点时间生效。","非常强势的花瓣。","可以发射的东西。","以某种方式增加你的最大生命值。","让你的其它花瓣行动更快。","小心过敏。","神秘的妙妙工具，受影响的单位被抑制，无法治疗。","健达奇趣蛋。","这东西重的离谱，没东西挡得住它。","非常神奇以至于周围的物体转了起来。","收集太阳能并持续治疗花朵。","对造成伤害的敌人反伤。","生成的非常快，但是难以击退敌人。","一堆沙粒。","在你生命值不超过一半时快速持续治疗。","它可以被移动得更远。","肘飞周围的敌人。","没人喜欢摸它。","对未受伤目标造成额外伤害。","为你提供临时护盾。","将受到的伤害分摊到后面的回合。","让花瓣遇水变大变高。","基于造成的伤害治疗花朵。","它炸了，打中很多敌人。","奇怪的遗物，让生物对你变得更中立。","为花朵提供额外护甲。","降低受影响单位的护甲。","挂起时吸收受到的伤害。","这简直是空气。"]
 			PetalAttributeListTrans=["","ATTRIBUTE=不可合成。不可吸收。无属性浮动。","COUNT=3","","SKILL=摧毁。治疗花朵[200%*Health]。","","DESTROY=造成[5/3*Damage][剧毒]，持续5回合。","","SHOOT=100%命中率。10%命中率衰减。造成双倍伤害。","EQUIP=花朵最大生命值增加[10/3*Health]。","SKILL=所有花瓣获得60行动条。如果装备多于1个更快，每个更快使效果减少10。","SKILL=消耗50%耐久。移动至多3格。","SHOOT=100%命中率。10%命中率衰减。造成双倍伤害。命中时施加50%治疗减益。","SKILL=在格内召唤甲虫。将伤害乘以8，尺寸设为20。&DESTROY=重置属性。","","SKILL=任意平移整行的实体。","ENDTURN=治疗花朵[10%*Health]。","ATTRIBUTE=不叠加。&EQUIP=花朵反伤增加[60+10*Rarity]%。","ATTACK=造成的击退/5。","COUNT=4&DAMAGE=攻击和防御率减少10%。&DESTROY=重置属性。","ENDTURN=当花朵剩余生命值不超过50%时，治疗花朵[Health/6]。","ATTRIBUTE=可以被移动至生物场地。移动至生物格时进行攻击作为替代。","SKILL=摧毁。对同列生物造成[200%*Damage][闪电]，并将目标行动条减半。对侧列生物造成[Damage][闪电]。","ATKDEF=成功时额外造成2倍击退。","ATTACK=命中生命值为上限的目标时，造成5倍伤害，并将目标行动条设为-50。","SKILL=摧毁。花朵获得[200%*Health]护盾。","ATTRIBUTE=不叠加。&EXIST=将非剧毒伤害分摊至5回合。","ATTRIBUTE=不叠加。&EQUIP=将所有花瓣尺寸增加2，上限20。","ATKDEF=治疗花朵等同于造成伤害的一半。","COUNT=4&SHOOT=120%命中率。20%命中率衰减。只消耗一部分。","ATKDEF=命中敌对状态的中立型生物时，将目标变回被动状态。","ATTRIBUTE=不叠加。&EQUIP=花朵获得[10%*Health]护甲。","DESTROY=施加[Damage/3]护甲减益，持续5回合。","ATTRIBUTE=不叠加。&SKILL=挂起花瓣，在摧毁前不能继续进行操作，至多持续5回合。吸收花朵所受伤害并将能量损耗除以3。","ATTACK=成功时造成的击退减半。目标判定一次移动。"]
 			MobDescriptionListTrans=["产自蚁后。","只是个石头，可能有点用。","可爱且无害。","蚂蚁全都躲在里面。","恐怖的。","装备了很多蒲公英的花朵。","会蜇人，别碰。","并非友善的小蜜蜂。","它就呆在那里做自己的事情。","小心尖刺，伤害极高。","饿了，想吃花花。","也会蜇人！","闪亮的，可爱且无害。","这是着火的蚁穴吗？","气象专家建议花朵不要外出。","再快一点。","砰。","吸收周围生物的伤害。","我的花瓣正在攻击我。","做最美味的果酱。","打不过，撤退。","敏捷，能伤人。","吸溜吸溜。","里面藏了一些动物。","它们很生气。","长得像片叶子。","你最好祈祷不要成为晚餐。","不对，这东西怎么没有灵魂链接？","也是可爱且无害的。","喜欢（吃）花朵。","闪亮电灯泡。","容易受惊。","会飞的苍蝇。","跑到死为止。","弱小且无助，像你一样。","还是个弱小的家伙。","有翅膀了，还会飞。","非常胖。","着火的蚂蚁。","着火的蚂蚁。","着火的蚂蚁。","弱小且无助，但是灵魂链接。","还是个弱小的家伙，但是灵魂链接。","有翅膀了，而且灵魂链接。"]
 			Object.assign(MobDescriptionListTrans,{101:"有网了，还是个织网高手。",102:"邪恶且饥饿。",103:"一天一花朵，召唤远离我~",104:"如果你真的想在这种自然灾害下外出的话...",105:"蟹博士，一夫当关，万夫莫开。",106:"怎么样才能将其摆脱？",107:"这叶子怎么打不掉啊，有bug吧。",108:"加强版机枪豌豆射手。",109:"再跑的快一点！不知疲惫。",110:"举起手来，你被包围了！"})
