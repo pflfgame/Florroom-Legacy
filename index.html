@@ -1648,6 +1648,9 @@
 			let mobName=mob
 			if(isMob(mob)) mobName=mob.name
 			let resultingDamage=damage
+			if(mobName==="Firefly") {
+				resultingDamage*=3
+			}
 			if(mobName==="!Roach!" && mob.effect.quickness>4) {
 				let damageBuff=20*(mob.effect.quickness-4)
 				if(damageBuff>100) damageBuff=100
