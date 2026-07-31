@@ -6032,6 +6032,8 @@
 		}
 		async function collapseGrid(grid) {
 			if(player.settings.skipanimation===true) {
+				selectedGrid.select=false
+				closeGridInfo(true)
 				if(parseInt(grid.getAttribute("value"))===0) {
 					grid.replaceWith(createGrid(0,parseInt(grid.dataset.x),parseInt(grid.dataset.y),"Empty",1))
 				}
