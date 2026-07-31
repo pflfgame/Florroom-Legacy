@@ -2269,24 +2269,30 @@
 			this.actionbar-=200
 			animation=true
 			this.print()
-			for(let i=0;i<=40;i++) {
-				getGrid(0,this.x,this.y).style.scale=1.3-0.015*Math.abs(i-20)
-				if(i===20) {
-					if(fight.environment===3) {
-						let pendingHeal=MobHealthMultiplier(this.rarity)/2
-						if(this.effect.hasOwnProperty("suppression")) pendingHeal-=approx(pendingHeal*this.effect.suppression)
-						pendingHeal=approx(pendingHeal)
-						addLog("[Mob] "+translateText(this.name)+translateText(" heals for ")+pendingHeal+translateText(" health."),"#bfbf00")
-						this.currenthealth+=pendingHeal
-						if(this.currenthealth>this.health) this.currenthealth=this.health
-					} else if(fight.environment===13) {
-						let pendingHeal=1.5*MobHealthMultiplier(this.rarity)
-						if(this.effect.hasOwnProperty("suppression")) pendingHeal-=approx(pendingHeal*this.effect.suppression)
-						pendingHeal=approx(pendingHeal)
-						addLog("[Mob] "+translateText(this.name)+translateText(" heals for ")+pendingHeal+translateText(" health."),"#bfbf00")
-						this.currenthealth+=pendingHeal
-						if(this.currenthealth>this.health) this.currenthealth=this.health
-					}
+			if(!player.settings.hasOwnProperty("skipanimation")) {
+				for(let i=0;i<=20;i++) {
+					getGrid(0,this.x,this.y).style.scale=1+0.015*i
+				}
+				await delay(30)
+			}
+			if(fight.environment===3) {
+				let pendingHeal=MobHealthMultiplier(this.rarity)/2
+				if(this.effect.hasOwnProperty("suppression")) pendingHeal-=approx(pendingHeal*this.effect.suppression)
+				pendingHeal=approx(pendingHeal)
+				addLog("[Mob] "+translateText(this.name)+translateText(" heals for ")+pendingHeal+translateText(" health."),"#bfbf00")
+				this.currenthealth+=pendingHeal
+				if(this.currenthealth>this.health) this.currenthealth=this.health
+			} else if(fight.environment===13) {
+				let pendingHeal=1.5*MobHealthMultiplier(this.rarity)
+				if(this.effect.hasOwnProperty("suppression")) pendingHeal-=approx(pendingHeal*this.effect.suppression)
+				pendingHeal=approx(pendingHeal)
+				addLog("[Mob] "+translateText(this.name)+translateText(" heals for ")+pendingHeal+translateText(" health."),"#bfbf00")
+				this.currenthealth+=pendingHeal
+				if(this.currenthealth>this.health) this.currenthealth=this.health
+			}
+			if(!player.settings.hasOwnProperty("skipanimation")) {
+				for(let i=21;i<=40;i++) {
+					getGrid(0,this.x,this.y).style.scale=1.6-0.015*i
 				}
 				await delay(30)
 			}
@@ -3233,6 +3239,9 @@
 			} )
 		}
 		function delay(time) {
+			if(player.settings.skipanimation===true) {
+				time/=20
+			}
 			return new Promise(resolve => setTimeout(resolve,time))
 		}
 		function waitAnimation() {
@@ -3789,6 +3798,13 @@
 				let addButton=settingButton(4,3,"On")
 				qolDisplay.appendChild(addButton)
 			}
+			if(!player.settings.hasOwnProperty("skipanimation")) {
+				let addButton=settingButton(5,3,"Off")
+				qolDisplay.appendChild(addButton)
+			} else {
+				let addButton=settingButton(5,3,"On")
+				qolDisplay.appendChild(addButton)
+			}
 			document.getElementById("settings").appendChild(qolDisplay)
 			document.getElementById("settings").appendChild(document.createElement("br"))
 			document.getElementById("settings").style.display="flex"
@@ -4111,6 +4127,20 @@
 				addButton.setAttribute("onclick","settingClick("+setX+","+setY+")")
 				return addButton
 			}
+			if(setX===5 && setY===3 && state==="On") {
+				let addButton=createGrid(5,setX,setY,"Text_"+translateText("Skip<br>all<br>animation<br><span class='text5'>REC=Off</span>"),1,0)
+				addButton.classList.add("green-bg","llmargin")
+				addButton.style.border="2px solid"
+				addButton.setAttribute("onclick","settingClick("+setX+","+setY+")")
+				return addButton
+			}
+			if(setX===5 && setY===3 && state==="Off") {
+				let addButton=createGrid(5,setX,setY,"Text_"+translateText("Skip<br>all<br>animation"),1,0)
+				addButton.classList.add("red-bg","llmargin")
+				addButton.style.border="2px solid"
+				addButton.setAttribute("onclick","settingClick("+setX+","+setY+")")
+				return addButton
+			}
 		}
 		function settingClick(setX,setY) {
 			if(animation) return
@@ -4345,6 +4375,15 @@
 					getGrid(5,setX,setY).replaceWith(settingButton(setX,setY,"On"))
 				} else {
 					delete player.settings.followflower
+					getGrid(5,setX,setY).replaceWith(settingButton(setX,setY,"Off"))
+				}
+			}
+			if(setX===5 && setY===3) {
+				if(!player.settings.hasOwnProperty("skipanimation")) {
+					player.settings.skipanimation=true
+					getGrid(5,setX,setY).replaceWith(settingButton(setX,setY,"On"))
+				} else {
+					delete player.settings.skipanimation
 					getGrid(5,setX,setY).replaceWith(settingButton(setX,setY,"Off"))
 				}
 			}
@@ -5119,6 +5158,7 @@
 			if(typeof(cord2)==="string") cord2=parseInt(cord2)
 			if(cord1===cord2) return 0
 			if(pathArray.indexOf(cord1*100+cord2)===-1 && pathArray.indexOf(cord2*100+cord1)===-1) return -1
+			if(player.settings.skipanimation===true) return 1
 			let disx=getSpotCord(cord2).x-getSpotCord(cord1).x,disy=getSpotCord(cord2).y-getSpotCord(cord1).y,disv=(disx*disx+disy*disy)**0.5+20
 			if(cord1-cord1%10!==cord2-cord2%10) disv=disv*1.5+50
 			return betterFloor(disv)
@@ -5991,6 +6031,21 @@
 			document.querySelectorAll("[value='79']").forEach(grid => collapseGrid(grid))
 		}
 		async function collapseGrid(grid) {
+			if(player.settings.skipanimation===true) {
+				if(parseInt(grid.getAttribute("value"))===0) {
+					grid.replaceWith(createGrid(0,parseInt(grid.dataset.x),parseInt(grid.dataset.y),"Empty",1))
+				}
+				if(parseInt(grid.getAttribute("value"))===1) {
+					grid.remove()
+				}
+				if(parseInt(grid.getAttribute("value"))===3) {
+					grid.remove()
+				}
+				if(parseInt(grid.getAttribute("value"))===79) {
+					grid.remove()
+				}
+				return
+			}
 			selectedGrid.select=false
 			closeGridInfo(true)
 			animation=true
@@ -6021,6 +6076,7 @@
 			animation=false
 		}
 		async function squeezeGrid(grid) {
+			if(player.settings.skipanimation===true) return
 			selectedGrid.select=false
 			closeGridInfo(true)
 			animation=true
@@ -7757,6 +7813,8 @@
 				case "Enable<br>right<br>click<br>menu": return "右键单击<br>启用菜单"
 				case "Strict<br>up/down<br>control": return "严格操控<br>上/下键"
 				case "Follow<br>flower<br>during<br>travel": return "旅行途中<br>跟随花朵"
+				case "Skip<br>all<br>animation": return "跳过所有<br>动画效果"
+				case "Skip<br>all<br>animation<br><span class='text5'>REC=Off</span>": return "跳过所有<br>动画效果<br><span class='text5'>推荐关闭</span>"
 				case "Inventory": return "仓库"
 				case "Gallery": return "图鉴"
 				case "You already cleared this spot.": return "你已经清理过此地点了。"
